@@ -52,16 +52,15 @@ export default function Chatbot() {
       const poll = async () => {
         try {
           const result = await axios.get(`${apiBase}/api/result/${task_id}`);
-          const status = result.data.status;
 
-          if (status === "done") {
-            const { task_id, status, ...cleaned } = result.data;
+          if (result.data.status === "done") {
+            const { task_id: _, status: __, ...cleaned } = result.data;
             updateLastBotMessage({
               type: "bot",
               text: JSON.stringify(cleaned, null, 2),
             });
             setLoading(false);
-          } else if (status === "error") {
+          } else if (result.data.status === "error") {
             updateLastBotMessage({
               type: "bot",
               text: `❌ Error: ${JSON.stringify(result.data.error || result.data, null, 2)}`,
@@ -70,14 +69,14 @@ export default function Chatbot() {
           } else {
             setTimeout(poll, 3000);
           }
-        } catch (err) {
+        } catch {
           updateLastBotMessage({ type: "bot", text: "❌ Failed to fetch result." });
           setLoading(false);
         }
       };
 
       setTimeout(poll, 1000);
-    } catch (err) {
+    } catch {
       setMessages((prev) => [
         ...prev,
         { type: "bot", text: "🚨 Failed to reach backend." },

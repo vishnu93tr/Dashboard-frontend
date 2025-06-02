@@ -25,8 +25,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import AverageDurationTrendChart from "@/components/AverageDurationTrendChart";
-import Chatbot from "@/components/Chatbot"; // no need to pass onClose
-import { Button } from "@/components/ui/button";
+import Chatbot from "@/components/Chatbot"; // ✅ Already handles its own open/close
 
 interface ExecutionPoint {
   date: string;
@@ -75,7 +74,7 @@ export default function DashboardPage() {
         setSelectedProject(res.data.projects[0]);
       }
     });
-  }, []);
+  }, [apiBase]);
 
   useEffect(() => {
     if (!selectedProject || !dateRange.from || !dateRange.to) return;
@@ -114,7 +113,7 @@ export default function DashboardPage() {
     };
 
     fetchDashboard();
-  }, [selectedProject, dateRange]);
+  }, [apiBase, selectedProject, dateRange]);
 
   return (
     <div className="p-6 space-y-6">
@@ -222,7 +221,7 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      {/* Chatbot handles its own open/close logic */}
+      {/* ✅ Chatbot (self-contained) */}
       <Chatbot />
     </div>
   );
